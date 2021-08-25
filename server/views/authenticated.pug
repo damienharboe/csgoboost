@@ -1,0 +1,9 @@
+doctype html
+head
+  title CSGO Boost - Dansk P2P Trading Platform
+h1 Redirecter...
+script.
+  window.opener.postMessage({
+  token: `#{token}`,
+  ok: true
+  }, `#{clientUrl}`)

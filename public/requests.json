@@ -1,0 +1,13 @@
+{
+    "category": "pistols",
+    "min_price": 200,
+    "max_price": 300,
+    "quality": "all",
+    "category_": "normal",
+    "condition": "fn",
+    "search": "dragon lore",
+    "sort": {
+        "by": "price",
+        "order": "ascending"
+    }
+}

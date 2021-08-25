@@ -1,0 +1,141 @@
+{
+    "wear": {
+        "0": "Factory New",
+        "1": "Minimal Wear",
+        "2": "Field-Tested",
+        "3": "Well-Worn",
+        "4": "Battle-Scarred"
+    },
+    "weapons": {
+        "0": "Knife",
+        "1": "Pistol",
+        "2": "Rifle",
+        "3": "SMG",
+        "4": "Shotguns",
+        "5": "LMG",
+        "6": "Gloves",
+        "7": "Other"
+    }
+},
+
+{
+    "steamid": "sumsum",
+    "items": [
+        {
+            "inspectable": true,
+            "wear": 0,
+            "float": 0.1,
+            "weaponname": "test", // yes
+            "skinname": "test", // yes
+            "selling": false, // yes
+            "price": 0, // yes
+            "classid": "id", // yes
+            "icon": "url", // yes
+            "type": "SMG"
+        }
+    ]
+},
+
+// notifications
+{
+    "steamId": "76561198012376870",
+    "notifications": [
+        {
+            "type": "offer",
+            "time": "1629754906",
+            "targetuser": "76561198012376870",
+            "weapon": {
+                "weaponname": "MP5-SD",
+                "skinname": "Dirt Drop",
+                "wear": 4,
+                "url": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou6rwOANfwOP3ZTxS6eOlnI-Zg8jmMrfdj1RZ7cRnk6eTo9rwjAziqko6MGr1cNfGJgU6YlnX-FO6wLi8gce0v5XBzyNi7yJ0-z-DyAYCwoiN"
+            }
+        }
+    ]
+},
+
+// item on market
+{
+    "weaponname": "test",
+    "skinname": "test",
+    "stattrak": false,
+    "wear": 0,
+    "lowest_price": 20,
+    "icon": "url",
+    "type": 0,
+    "amount": 2
+}
+
+// items listing
+{
+    "weaponname": "test",
+    "skinname": "test",
+    "stattrak": false,
+    "wear": 0,
+    "url": "url",
+    "items": [
+        {
+            "float": 0.1,
+            "price": 0, // yes
+            "classid": "id", // yes
+            "url": "url", // yes
+            "steamId": "steamid",
+            "steampic": "url",
+            "steamname": "name",
+            "inspecturl": "url"
+        }
+    ]
+}
+
+{
+    "appid": 730,
+    "classid": "3035568332",
+    "instanceid": "302028390",
+    "currency": 0,
+    "background_color": "",
+    "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou6rwOANfwOP3ZTxS6eOlnI-Zg8jmMrfdj1RZ7cRnk6eTo9rwjAziqko6MGr1cNfGJgU6YlnX-FO6wLi8gce0v5XBzyNi7yJ0-z-DyAYCwoiN",
+    "icon_url_large": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou6rwOANfwOP3ZTxS6eOlnI-Zg8jmMrfdj1RZ7cRnk9bN9J7yjRrm_UU5N2H1dY_DIQU4NQmDrlK6wu_oh5S4vcuazSNruSgq4y7cyhfhn1gSOSrnPlQ1",
+    "descriptions": [{
+        "type": "html",
+        "value": "Exterior: Battle-Scarred"
+    }, {
+        "type": "html",
+        "value": " "
+    }, {
+        "type": "html",
+        "value": "Often imitated but never equaled, the iconic MP5 is perhaps the most versatile and popular SMG in the world. This SD variant features an integrated silencer, making an already formidable weapon whisper-quiet. Black streaks have been spray painted over a dark base.\n\n<i>Dirt don't hurt… until it does</i>"
+    }, {
+        "type": "html",
+        "value": " "
+    }, {
+        "type": "html",
+        "value": "The 2018 Inferno Collection",
+        "color": "9da1a9"
+    }, {
+        "type": "html",
+        "value": " "
+    }],
+    "tradable": 1,
+    "actions": [{
+        "link": "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20S%owner_steamid%A%assetid%D13889176768356672851",
+        "name": "Inspect in Game..."
+    }],
+    "name": "MP5-SD | Dirt Drop",
+    "name_color": "D2D2D2",
+    "type": "Consumer Grade SMG",
+    "market_name": "MP5-SD | Dirt Drop (Battle-Scarred)",
+    "market_hash_name": "MP5-SD | Dirt Drop (Battle-Scarred)",
+    "market_actions": [{
+        "link": "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20M%listingid%A%assetid%D13889176768356672851",
+        "name": "Inspect in Game..."
+    }],
+    "commodity": 0,
+    "market_tradable_restriction": 7,
+    "marketable": 1,
+    "tags": [{
+        "category": "Type",
+        "internal_name": "CSGO_Type_SMG",
+        "localized_category_name": "Type",
+        "localized_tag_name": "SMG"
+    }
+}
