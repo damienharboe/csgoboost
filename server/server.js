@@ -439,7 +439,7 @@ app.post("/api/market/addorder", function(req, res){
 
 app.post("/api/market/offer", function(req, res){
     users.findOne({ token: req.body.token }, function(err, ures){
-        if((ures.money - req.body.offer) > 20)
+        if((ures.money - req.body.offer) < 20)
         {
             res.json({ success: false, status: 420 })
         }
@@ -500,7 +500,44 @@ app.post("/api/market/offer", function(req, res){
                                 }
                             }
                             users.updateOne(query, update)
-                            res.json({ success: true, status: 1 })
+
+                            // insert notification
+                            notifications.findOne({ steamId: ires.steamId }, function(err, nres){
+                                if(nres === null)
+                                {
+                                    // insert
+                                    var notifdoc = {
+                                        steamId: ires.steamId,
+                                        notifications: [
+                                            {
+                                                type: "offer",
+                                                time: Date.now(),
+                                                targetuser: ures.steamId,
+                                                classid: req.body.classid
+                                            }
+                                        ]
+                                    }
+                                    notifications.insertOne(notifdoc)
+                                }
+                                else
+                                {
+                                    // update
+                                    var query = { steamId: ires.steamId }
+                                    var update = {
+                                        $push: {
+                                            notifications: {
+                                                type: "offer",
+                                                time: Date.now(),
+                                                targetuser: ures.steamId,
+                                                classid: req.body.classid
+                                            }
+                                        }
+                                    }
+                                    notifications.update(query, update)
+                                }
+
+                                res.json({ success: true, status: 1 })
+                            })
                         }
                     })
                 }
@@ -997,24 +1034,67 @@ app.get("/api/user/notifications", function(req, res){
     users.findOne({ token: req.query.token }, function(err, ures){
         notifications.findOne({ steamId: ures.steamId }, function(err, nres){
             var notifs = Array()
-            for(var i = 0; i < nres.notifications.length; i++)
+            if(nres === null || nres.notifications.length === 0)
             {
-                var n = nres.notifications[i]
-                users.findOne({ steamId: n.targetuser }, function(err, tres){
-                    var obj = {
-                        type: n.type,
-                        time: n.time,
-                        name: tres.name,
-                        weapon: n.weapon
-                    }
-                    notifs.push(obj)
-                    if(i === nres.notifications.length)
-                    {
-                        res.json(notifs)
-                    }
-                })
+                res.json(notifs)
+            }
+            else
+            {
+                for(var i = 0; i < nres.notifications.length; i++)
+                {
+                    var n = nres.notifications[i]
+                    users.findOne({ steamId: n.targetuser }, function(err, tres){
+                        var query = {
+                            items: {
+                                $elemMatch: {
+                                    classid: n.classid
+                                }
+                            }
+                        }
+                        inventories.findOne(query, function(err, ires){
+                            let wobj = ires.items.find(o => o.classid === n.classid)
+                            var obj = {
+                                type: n.type,
+                                time: n.time,
+                                name: tres.name,
+                                steamId: n.targetuser,
+                                weapon: {
+                                    weaponname: wobj.weaponname,
+                                    skinname: wobj.skinname,
+                                    wear: wobj.wear,
+                                    classid: n.classid,
+                                    url: wobj.url
+                                }
+                            }
+                            notifs.push(obj)
+                            if(i === nres.notifications.length)
+                            {
+                                res.json(notifs)
+                            }
+                        })
+                    })
+                }
             }
         })
+    })
+})
+
+app.post("/api/user/notifications/remove", function(req, res){
+    users.findOne({ token: req.body.token }, function(err, ures){
+        console.log(req.body.classid)
+        var query = {
+            steamId: ures.steamId
+        }
+        var doc = {
+            $pull: {
+                notifications: {
+                    classid: req.body.classid
+                }
+            }
+        }
+        notifications.updateOne(query, doc)
+
+        res.json({ success: true })
     })
 })
 

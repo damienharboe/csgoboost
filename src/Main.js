@@ -117,7 +117,7 @@ class User extends Component {
             return(
                 <div className="right">
                     <a className={notifc} id="notificationIcon" onClick={this.showHideNotifs} >
-                        1
+                        {this.props.notifCount}
                     </a>
                     <a className={accountc} id="accountIcon" onClick={this.showHideProfile}>
                         <span className="text">
@@ -133,35 +133,141 @@ class User extends Component {
     }
 }
 
-class Notification extends Component {
+class NotifOffer extends Component {
+    constructor(props, context){
+        super(props, context);
+        this.acceptOffer = this.acceptOffer.bind(this)
+        this.rejectOffer = this.rejectOffer.bind(this)
+        this.removeNotif = this.removeNotif.bind(this)
+    }
+
+    acceptOffer()
+    {
+        var postdata = {
+            token: localStorage.getItem("token"),
+            classid: this.props.classid
+        }
+        axios.post("/api/market/addorder", postdata)
+    }
+
+    rejectOffer()
+    {
+        var postdata = {
+            token: localStorage.getItem("token"),
+            classid: this.props.classid
+        }
+        axios.post("/api/market/offer/reject", postdata)
+    }
+
+    removeNotif()
+    {
+
+    }
+
     render()
     {
+        const wearmap = new Map()
+        wearmap.set(0, "Factory New")
+        wearmap.set(1, "Minimal Wear")
+        wearmap.set(2, "Field-Tested")
+        wearmap.set(3, "Well-Worn")
+        wearmap.set(4, "Battle-Scarred")
+
+        var addzero = (t) => {
+            if(t < 10)
+                t = "0" + t.toString()
+            return t
+        }
+
+        var timeSince = (date) => {
+
+            var seconds = Math.floor((new Date() - date) / 1000);
+          
+            var interval = seconds / 31536000;
+          
+            if (interval > 1) {
+              return Math.floor(interval) + " år siden";
+            }
+            interval = seconds / 2592000;
+            if (interval > 1) {
+              return Math.floor(interval) + " måneder siden";
+            }
+            interval = seconds / 86400;
+            if (interval > 1) {
+              return Math.floor(interval) + " dage siden";
+            }
+            interval = seconds / 3600;
+            if (interval > 1) {
+              return Math.floor(interval) + " timer siden";
+            }
+            interval = seconds / 60;
+            if (interval > 1) {
+              return Math.floor(interval) + " minutter siden";
+            }
+            return Math.floor(seconds) + " sekunder siden";
+          }
+
+        var imgstyle = {
+            backgroundImage: "url(" + this.props.url + ")",
+            backgroundSize: "90%",
+            backgroundRepeat: "no-repeat",
+            position: "absolute",
+            backgroundPosition: "center"
+        }
+
+        var removeprop = () => {
+            this.props.removeNotif(this.props.classid)
+        }
+
+        var d = new Date(this.props.time)
+
         return(
-            <div class="notificationBox rounded" id="notification_1">
-                <div class="img" /*style="background-image: url('gfx/DEAGLE.png');"*/>&nbsp;</div>
-                <div class="right">
-                    <span class="date">D. 20/01-2021 kl. 16:15 (5 minutter siden)</span>
-                    <span class="header">
-                        <b>Genstand solgt</b>: Desert Eagle | Printstream (Minimal Wear)
+            <div className="notificationBox rounded" id="notification_1">
+                <div className="img" style={{...imgstyle}}>&nbsp;</div>
+                <div className="right">
+                    <span className="date">D. {addzero(d.getDate())}/{addzero(d.getMonth() + 1)}/{d.getFullYear()} kl. {addzero(d.getHours())}:{addzero(d.getMinutes())} ({timeSince(this.props.time)})</span>
+                    <span className="header">
+                        <b>Tilbud</b>: {this.props.weaponname} | {this.props.weaponname} ({wearmap.get(this.props.wear)})
                     </span>
                     
-                    Denne genstand er blevet solgt til <b><a href="https://steamcommunity.com/profiles/76561199021109632" target="_blank">M0rgenA1M | CSGOBOOST.DK</a></b>.
-                    <br /> Genstanden skal leveres inden d. 21/01-2021 kl. 16:3
-                    <div class="actions">
-                        <div class="button rounded">
-                            Levér genstand
+                    Tilbud fra <b><a href={"https://steamcommunity.com/profiles/" + this.props.steamId} target="_blank">{this.props.name}</a></b>.
+                    <div className="actions">
+                        <div className="button rounded" onClick={this.acceptOffer}>
+                            Accepter tilbud
                         </div>
-                        <div class="button rounded">
-                            Se alle salg
+                        <div className="button rounded" onClick={this.rejectOffer}>
+                            Afvis tilbud
                         </div>
                     </div>
                     
-                    <div class="button close">
+                    <div className="button close" onClick={removeprop}>
                         X
                     </div>
                 </div>
             </div> 
         )
+    }
+}
+
+class Notification extends Component {
+    render()
+    {
+        if(this.props.type == "offer")
+        {
+            return(
+                <NotifOffer 
+                    time={this.props.time}
+                    name={this.props.name}
+                    weaponname={this.props.weaponname}
+                    skinname={this.props.skinname}
+                    wear={this.props.wear}
+                    url={this.props.url}
+                    steamId={this.props.steamId}
+                    classid={this.props.classid}
+                    removeNotif={this.props.removeNotif}
+                />
+            )
+        }
     }
 }
 
@@ -174,6 +280,7 @@ class Main extends Component {
         this.getNotifs = this.getNotifs.bind(this)
         this.setMoney = this.setMoney.bind(this)
         this.logout = this.logout.bind(this)
+        this.removeNotif = this.removeNotif.bind(this)
         this.state = { showProfile: false, showNotifs: false, money: "...", first: true, notifs: [] }
     }
 
@@ -191,6 +298,25 @@ class Main extends Component {
     showHideNotifs(val)
     {
         this.setState({ showNotifs: val })
+    }
+
+    removeNotif(id)
+    {
+        var newarr = this.state.notifs
+        newarr.forEach((elem, index) => {
+            if(elem.props.classid == id)
+            {
+                newarr.splice(index)
+            }
+        })
+        this.setState({ notifs: newarr })
+        
+        // Post notif
+        var postdata = {
+            token: localStorage.getItem("token"),
+            classid: id
+        }
+        axios.post("/api/user/notifications/remove", postdata)
     }
 
     setMoney(money)
@@ -212,7 +338,6 @@ class Main extends Component {
 
     async getNotifs()
     {
-        console.log("test2")
         let c = this
         axios.get("/api/user/notifications", {
             params: {
@@ -220,7 +345,7 @@ class Main extends Component {
             }
         }).then(function(response){
             var notifs = Array()
-            for(var i = 0; i < response.data; i++)
+            for(var i = 0; i < response.data.length; i++)
             {
                 let notif = response.data[i]
                 notifs.push(<Notification 
@@ -231,6 +356,9 @@ class Main extends Component {
                     skinname={notif.weapon.skinname}
                     wear={notif.weapon.wear}
                     url={notif.weapon.url}
+                    steamId={notif.steamId}
+                    classid={notif.weapon.classid}
+                    removeNotif={c.removeNotif}
                 />)
             }
             c.setState({ notifs: notifs })
@@ -269,7 +397,7 @@ class Main extends Component {
                                 Hjælp
                             </NavLink>
                         </div>
-                        <User setMoney={this.setMoney} callback={this.showHideProfile} notifcallback={this.showHideNotifs} />
+                        <User setMoney={this.setMoney} notifCount={this.state.notifs.length} callback={this.showHideProfile} notifcallback={this.showHideNotifs} />
                     </div>
                 </div>
                 <div className={accountc} id="profileDropDown">
