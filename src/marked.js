@@ -90,11 +90,11 @@ class SubMenu extends Component {
     constructor(props, context){
         super(props, context)
         this.state = {
-            quality: 0,
+            quality: -1,
             vquality: "Kvalitet",
-            category: 0,
+            category: -1,
             vcategory: "Kategori",
-            wear: 0,
+            wear: -1,
             vwear: "Stand"
         }
     }
@@ -103,7 +103,7 @@ class SubMenu extends Component {
     {
         if(prevState.quality != this.state.quality || prevState.category != this.state.category || prevState.wear != this.state.wear)
         {
-            this.props.callback({ quality: this.state.quality, category: this.state.category, wear: this.state.wear })
+            this.props.callback(this.state.quality, this.state.category, this.state.wear)
         }
     }
 
@@ -122,15 +122,15 @@ class SubMenu extends Component {
                             {this.state.vquality}
                         </span>
                         <div className="content rounded_b z4">
-                            <a onClick={() => this.setState({ quality: 0, vquality: "Alle" })} style={{color: "#ffffff"}}>Alle</a>
-                            <a onClick={() => this.setState({ quality: 1, vquality: "Forbrugerkvalitet" })} style={{color: "#b0c3d9"}}>Forbrugerkvalitet</a>
-                            <a onClick={() => this.setState({ quality: 2, vquality: "Mil-spec-kvalitet" })} style={{color: "#4b69ff"}}>Mil-spec-kvalitet</a>
-                            <a onClick={() => this.setState({ quality: 3, vquality: "Industrikvalitet" })} style={{color: "#5e8aa7"}}>Industrikvalitet</a>
-                            <a onClick={() => this.setState({ quality: 4, vquality: "Begrænset" })} style={{color: "#8840c9"}}>Begrænset</a>
-                            <a onClick={() => this.setState({ quality: 5, vquality: "Klassificeret" })} style={{color: "#b12be6"}}>Klassificeret</a>
-                            <a onClick={() => this.setState({ quality: 6, vquality: "Tilsløret" })} style={{color: "#df4b4b"}}>Tilsløret</a>
-                            <a onClick={() => this.setState({ quality: 7, vquality: "Smuglergods" })} style={{color: "#e4ae3a"}}>Smuglergods</a>
-                            <a onClick={() => this.setState({ quality: 8, vquality: "Ekstraordinær" })} style={{color: "#eb453b"}}>Ekstraordinær</a>
+                            <a onClick={() => this.setState({ quality: -1, vquality: "Alle" })} style={{color: "#ffffff"}}>Alle</a>
+                            <a onClick={() => this.setState({ quality: 0, vquality: "Forbrugerkvalitet" })} style={{color: "#b0c3d9"}}>Forbrugerkvalitet</a>
+                            <a onClick={() => this.setState({ quality: 1, vquality: "Mil-spec-kvalitet" })} style={{color: "#4b69ff"}}>Mil-spec-kvalitet</a>
+                            <a onClick={() => this.setState({ quality: 2, vquality: "Industrikvalitet" })} style={{color: "#5e8aa7"}}>Industrikvalitet</a>
+                            <a onClick={() => this.setState({ quality: 3, vquality: "Begrænset" })} style={{color: "#8840c9"}}>Begrænset</a>
+                            <a onClick={() => this.setState({ quality: 4, vquality: "Klassificeret" })} style={{color: "#b12be6"}}>Klassificeret</a>
+                            <a onClick={() => this.setState({ quality: 5, vquality: "Tilsløret" })} style={{color: "#df4b4b"}}>Tilsløret</a>
+                            <a onClick={() => this.setState({ quality: 6, vquality: "Smuglergods" })} style={{color: "#e4ae3a"}}>Smuglergods</a>
+                            <a onClick={() => this.setState({ quality: 7, vquality: "Ekstraordinær" })} style={{color: "#eb453b"}}>Ekstraordinær</a>
                         </div>
                     </span>
                     <span className="dropDown">
@@ -138,12 +138,12 @@ class SubMenu extends Component {
                             {this.state.vcategory}
                         </span>
                         <div className="content rounded_b z4">
-                            <a onClick={() => this.setState({ category: 0, vcategory: "Alle" })} style={{color: "#ffffff"}}>Alle</a>
-                            <a onClick={() => this.setState({ category: 1, vcategory: "Normal" })} style={{color: "#b2acae"}}>Normal</a>
-                            <a onClick={() => this.setState({ category: 2, vcategory: "StatTrack™" })} style={{color: "#cf6a33"}}>StatTrack™</a>
-                            <a onClick={() => this.setState({ category: 3, vcategory: "Souvenir" })} style={{color: "#ffb829"}}>Souvenir</a>
-                            <a onClick={() => this.setState({ category: 4, vcategory: "★" })} style={{color: "#8840c9"}}>★</a>
-                            <a onClick={() => this.setState({ category: 5, vcategory: "★ StatTrack™" })} style={{color: "#8650ac"}}>★ StatTrack™</a>
+                            <a onClick={() => this.setState({ category: -1, vcategory: "Alle" })} style={{color: "#ffffff"}}>Alle</a>
+                            <a onClick={() => this.setState({ category: 0, vcategory: "Normal" })} style={{color: "#b2acae"}}>Normal</a>
+                            <a onClick={() => this.setState({ category: 1, vcategory: "StatTrack™" })} style={{color: "#cf6a33"}}>StatTrack™</a>
+                            <a onClick={() => this.setState({ category: 2, vcategory: "Souvenir" })} style={{color: "#ffb829"}}>Souvenir</a>
+                            <a onClick={() => this.setState({ category: 3, vcategory: "★" })} style={{color: "#8840c9"}}>★</a>
+                            <a onClick={() => this.setState({ category: 4, vcategory: "★ StatTrack™" })} style={{color: "#8650ac"}}>★ StatTrack™</a>
                         </div>
                     </span>
 
@@ -152,13 +152,13 @@ class SubMenu extends Component {
                             {this.state.vwear}
                         </span>
                         <div className="content rounded_b z4">
-                            <a onClick={() => this.setState({ wear: 0, vwear: "Alle" })} style={{color: "#ffffff"}}>Alle</a>
-                            <a onClick={() => this.setState({ wear: 1, vwear: "Fabriksny" })} style={{color: "#008000"}}>Fabriksny</a>
-                            <a onClick={() => this.setState({ wear: 2, vwear: "Lidt slidt" })} style={{color: "#5cb85c"}}>Lidt slidt</a>
-                            <a onClick={() => this.setState({ wear: 3, vwear: "Afprøvet i marken" })} style={{color: "#f0ad4e"}}>Afprøvet i marken</a>
-                            <a onClick={() => this.setState({ wear: 4, vwear: "Velbrugt" })} style={{color: "#d9534f"}}>Velbrugt</a>
-                            <a onClick={() => this.setState({ wear: 5, vwear: "Kampvansiret" })} style={{color: "#993a38"}}>Kampvansiret</a>
-                            <a onClick={() => this.setState({ wear: 6, vwear: "Ikke malet" })} style={{color: "#b2acae"}}>Ikke malet</a>
+                            <a onClick={() => this.setState({ wear: -1, vwear: "Alle" })} style={{color: "#ffffff"}}>Alle</a>
+                            <a onClick={() => this.setState({ wear: 0, vwear: "Fabriksny" })} style={{color: "#008000"}}>Fabriksny</a>
+                            <a onClick={() => this.setState({ wear: 1, vwear: "Lidt slidt" })} style={{color: "#5cb85c"}}>Lidt slidt</a>
+                            <a onClick={() => this.setState({ wear: 2, vwear: "Afprøvet i marken" })} style={{color: "#f0ad4e"}}>Afprøvet i marken</a>
+                            <a onClick={() => this.setState({ wear: 3, vwear: "Velbrugt" })} style={{color: "#d9534f"}}>Velbrugt</a>
+                            <a onClick={() => this.setState({ wear: 4, vwear: "Kampvansiret" })} style={{color: "#993a38"}}>Kampvansiret</a>
+                            <a onClick={() => this.setState({ wear: 5, vwear: "Ikke malet" })} style={{color: "#b2acae"}}>Ikke malet</a>
                         </div>
                     </span>
                 </span>
@@ -287,36 +287,39 @@ class Marked extends Component {
         super(props, context);
         this.getMarketPlace = this.getMarketPlace.bind(this)
         this.state = { arr: [], options: {
-            category: 0,
-            quality: 0,
-            wear: 0
+            category: -1,
+            quality: -1,
+            wear: -1
         }  }
         this.firstCall = true
     }
 
-    getMarketPlace()
+    getMarketPlace(quality, category, wear)
     {
         let c = this
         let obj = {
-            category: 0,
-            quality: 0,
-            wear: 0
+            category: -1,
+            quality: -1,
+            wear: -1
         }
-
-        if(this.state.options.category != 0)
+        if(category != undefined)
         {
-            obj.category = this.state.options.category;
+            obj.category = category;
         }
-        if(this.state.options.quality != 0)
+        if(quality != undefined)
         {
-            obj.state.quality = this.state.options.quality;
+            obj.quality = quality;
         }
-        if(this.state.options.wear != 0)
+        if(wear != undefined)
         {
-            obj.wear = this.state.options.wear;
+            obj.wear = wear;
         }
         axios.get("/api/market", {
-            params: obj
+            params: {
+                wear: obj.wear,
+                quality: obj.quality,
+                category: obj.category
+            }
         }).then(function(response){
             let arr = []
             // For each item

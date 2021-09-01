@@ -284,17 +284,17 @@ app.get("/api/market/item/steamprice", function(req, res){
 app.get("/api/market", function(req, res){
     // Building da query
     var query = { }
-    if(req.query.wear != 0)
+    if(req.query.wear != -1)
     {
-        query.wear = req.query.wear
+        query.wear = parseInt(req.query.wear)
     }
-    if(req.query.category != 0)
+    if(req.query.category != -1)
     {
-        query.category = req.query.category
+        query.category = parseInt(req.query.category)
     }
-    if(req.query.quality != 0)
+    if(req.query.quality != -1)
     {
-        query.quality = req.query.quality
+        query.quality = parseInt(req.query.quality)
     }
     market.find(query).toArray(function(err, result){
         if (err) throw err
