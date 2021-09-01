@@ -5,10 +5,15 @@ import {
   BrowserRouter,
   Redirect
 } from "react-router-dom";
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import Marked from "./marked";
 import Inventar from "./inventar";
 import Help from "./help";
 import Item from "./item"
+import Admin from "./admin"
 import Footer from "./footer"
 import Profile from "./account/profile"
 import History from "./account/history"
@@ -281,7 +286,9 @@ class Main extends Component {
         this.setMoney = this.setMoney.bind(this)
         this.logout = this.logout.bind(this)
         this.removeNotif = this.removeNotif.bind(this)
-        this.state = { showProfile: false, showNotifs: false, money: "...", first: true, notifs: [] }
+        this.getadmin = this.getadmin.bind(this)
+        this.renderAdminButton = this.renderAdminButton.bind(this)
+        this.state = { showProfile: false, showNotifs: false, money: "...", first: true, notifs: [], admin: false }
     }
 
     logout()
@@ -365,6 +372,30 @@ class Main extends Component {
         })
     }
 
+    getadmin()
+    {
+        let c = this
+        axios.get("/api/user/isadmin", {
+            params: {
+                token: localStorage.getItem("token")
+            }
+        }).then(function(response){
+            c.setState({ admin: response.data.admin })
+        })
+    }
+
+    renderAdminButton()
+    {
+        if(this.state.admin)
+        {
+            return(
+                <NavLink to="admin" className="a" activeClassName="selected">
+                    Admin
+                </NavLink>
+            )
+        }
+    }
+
     render() {
         let accountc = "profile hidden"
         let notifc = "notificationsParent hidden"
@@ -380,6 +411,7 @@ class Main extends Component {
         {
             this.state.first = false
             this.getNotifs()
+            this.getadmin()
         }
 
         return (
@@ -396,6 +428,7 @@ class Main extends Component {
                             <NavLink to="help" className="a" activeClassName="selected">
                                 Hjælp
                             </NavLink>
+                            {this.renderAdminButton()}
                         </div>
                         <User setMoney={this.setMoney} notifCount={this.state.notifs.length} callback={this.showHideProfile} notifcallback={this.showHideNotifs} />
                     </div>
@@ -443,6 +476,7 @@ class Main extends Component {
                     <Route path="/withdraw" component={Withdraw} />
                     <Route path="/deposit" component={Deposit} />
                     <Route path="/pending" component={Pending} />
+                    <Route path="/admin" component={Admin} />
                 </div>
             </BrowserRouter>
         );

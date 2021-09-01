@@ -848,6 +848,7 @@ app.post("/api/market/edit", function(req, res){
                     }
                 }
                 market.updateOne(query2, update)
+                res.json({ success: true })
             })
         })
     })
@@ -1095,6 +1096,19 @@ app.post("/api/user/notifications/remove", function(req, res){
         notifications.updateOne(query, doc)
 
         res.json({ success: true })
+    })
+})
+
+app.get("/api/user/isadmin", function(req, res){
+    users.findOne({ token: req.query.token }, function(err, ures){
+        if(ures.admin)
+        {
+            res.json({ admin: true })
+        }
+        else
+        {
+            res.json({ admin: false })
+        }
     })
 })
 

@@ -1,6 +1,9 @@
+import { ToastContainer, toast } from 'react-toastify';
 import axios from "axios";
 import React, { Component } from "react"
 import deagle from '.\\gfx\\DEAGLE.png'
+import 'react-toastify/dist/ReactToastify.css';
+
 
 class SortingMenu extends Component {
     render(){
@@ -57,7 +60,11 @@ class Item extends Component {
             price: parseInt(this.state.price)
         }
         axios.post("/api/market/new", postdata).then(function(response){
-            alert(response.success)
+            toast.success("Skin sat til salg.", {
+                position: "top-right",
+                draggable: true,
+                theme: "dark",
+            })
         })
     }
 
@@ -68,7 +75,11 @@ class Item extends Component {
             classid: this.state.classid
         }
         axios.post("/api/market/delete", postdata).then(function(response){
-
+            toast.success("Skin fjernet fra markedet.", {
+                position: "top-right",
+                draggable: true,
+                theme: "dark",
+            })
         })
     }
 
@@ -80,7 +91,12 @@ class Item extends Component {
             price: parseInt(this.state.price)
         }
         axios.post("/api/market/edit", postdata).then(function(response){
-            
+            console.log("test")
+            toast.success("Prisen er blevet ændret.", {
+                position: "top-right",
+                draggable: true,
+                theme: "dark",
+            })
         })
     }
 
@@ -295,13 +311,24 @@ class Inventar extends Component {
         }
 
         return(
-            <div className="wrapper">
+            <>
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
                 <div className="subHeader">
                     CSGO Boost &gt; Inventar
                 </div>
                 <SortingMenu />
                 {this.renderInventory()}
-            </div>
+            </>
         )
     }
 }
