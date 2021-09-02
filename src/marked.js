@@ -92,8 +92,8 @@ class SubMenu extends Component {
         this.state = {
             quality: -1,
             vquality: "Kvalitet",
-            category: -1,
-            vcategory: "Kategori",
+            rarity: -1,
+            vrarity: "Kategori",
             wear: -1,
             vwear: "Stand"
         }
@@ -101,9 +101,9 @@ class SubMenu extends Component {
 
     componentDidUpdate(prevProps, prevState)
     {
-        if(prevState.quality != this.state.quality || prevState.category != this.state.category || prevState.wear != this.state.wear)
+        if(prevState.quality != this.state.quality || prevState.rarity != this.state.rarity || prevState.wear != this.state.wear)
         {
-            this.props.callback(this.state.quality, this.state.category, this.state.wear)
+            this.props.callback(this.state.quality, this.state.rarity, this.state.wear)
         }
     }
 
@@ -135,15 +135,15 @@ class SubMenu extends Component {
                     </span>
                     <span className="dropDown">
                         <span className="trigger rounded z5">
-                            {this.state.vcategory}
+                            {this.state.vrarity}
                         </span>
                         <div className="content rounded_b z4">
-                            <a onClick={() => this.setState({ category: -1, vcategory: "Alle" })} style={{color: "#ffffff"}}>Alle</a>
-                            <a onClick={() => this.setState({ category: 0, vcategory: "Normal" })} style={{color: "#b2acae"}}>Normal</a>
-                            <a onClick={() => this.setState({ category: 1, vcategory: "StatTrack™" })} style={{color: "#cf6a33"}}>StatTrack™</a>
-                            <a onClick={() => this.setState({ category: 2, vcategory: "Souvenir" })} style={{color: "#ffb829"}}>Souvenir</a>
-                            <a onClick={() => this.setState({ category: 3, vcategory: "★" })} style={{color: "#8840c9"}}>★</a>
-                            <a onClick={() => this.setState({ category: 4, vcategory: "★ StatTrack™" })} style={{color: "#8650ac"}}>★ StatTrack™</a>
+                            <a onClick={() => this.setState({ rarity: -1, vrarity: "Alle" })} style={{color: "#ffffff"}}>Alle</a>
+                            <a onClick={() => this.setState({ rarity: 0, vrarity: "Normal" })} style={{color: "#b2acae"}}>Normal</a>
+                            <a onClick={() => this.setState({ rarity: 1, vrarity: "StatTrack™" })} style={{color: "#cf6a33"}}>StatTrack™</a>
+                            <a onClick={() => this.setState({ rarity: 2, vrarity: "Souvenir" })} style={{color: "#ffb829"}}>Souvenir</a>
+                            <a onClick={() => this.setState({ rarity: 3, vrarity: "★" })} style={{color: "#8840c9"}}>★</a>
+                            <a onClick={() => this.setState({ rarity: 4, vrarity: "★ StatTrack™" })} style={{color: "#8650ac"}}>★ StatTrack™</a>
                         </div>
                     </span>
 
@@ -287,24 +287,24 @@ class Marked extends Component {
         super(props, context);
         this.getMarketPlace = this.getMarketPlace.bind(this)
         this.state = { arr: [], options: {
-            category: -1,
+            rarity: -1,
             quality: -1,
             wear: -1
         }  }
         this.firstCall = true
     }
 
-    getMarketPlace(quality, category, wear)
+    getMarketPlace(quality, rarity, wear)
     {
         let c = this
         let obj = {
-            category: -1,
+            rarity: -1,
             quality: -1,
             wear: -1
         }
-        if(category != undefined)
+        if(rarity != undefined)
         {
-            obj.category = category;
+            obj.rarity = rarity;
         }
         if(quality != undefined)
         {
@@ -318,7 +318,7 @@ class Marked extends Component {
             params: {
                 wear: obj.wear,
                 quality: obj.quality,
-                category: obj.category
+                rarity: obj.rarity
             }
         }).then(function(response){
             let arr = []
