@@ -288,14 +288,15 @@ app.get("/api/market", function(req, res){
     {
         query.wear = parseInt(req.query.wear)
     }
-    if(req.query.category != -1)
+    if(req.query.rarity != -1)
     {
-        query.category = parseInt(req.query.category)
+        query.rarity = parseInt(req.query.rarity)
     }
     if(req.query.quality != -1)
     {
         query.quality = parseInt(req.query.quality)
     }
+    console.log(query)
     market.find(query).toArray(function(err, result){
         if (err) throw err
         res.json(result)
@@ -672,7 +673,10 @@ app.post("/api/market/new", function(req, res){
                         price: price,
                         url: obj.url,
                         classid: classid,
-                        amount: 1
+                        amount: 1,
+                        quality: obj.quality,
+                        rarity: obj.rarity,
+                        category: obj.category
                     }
                     market.insertOne(doc)
 
@@ -684,6 +688,9 @@ app.post("/api/market/new", function(req, res){
                         url: obj.url,
                         steamprice: 0,
                         steampricefetch: 0,
+                        quality: obj.quality,
+                        rarity: obj.rarity,
+                        category: obj.category,
                         items: [
                             {
                                 float: 0.1,
@@ -903,6 +910,38 @@ app.post("/api/user", function(req, res){
     })
 })
 
+const categorymap = new Map()
+categorymap.set("CSGO_Type_Knife", 0)
+categorymap.set("CSGO_Type_Pistol", 1)
+categorymap.set("CSGO_Type_SniperRifle", 2)
+categorymap.set("CSGO_Type_Rifle", 2)
+categorymap.set("CSGO_Type_SMG", 3)
+categorymap.set("CSGO_Type_Shotgun", 4)
+categorymap.set("CSGO_Type_Machinegun", 5)
+categorymap.set("Type_Hands", 6)
+categorymap.set("CSGO_Tool_Sticker", 7)
+categorymap.set("CSGO_Type_WeaponCase", 8) // Andet kategorien
+categorymap.set("CSGO_Tool_WeaponCase_KeyTag", 8) // Andet kategorien
+categorymap.set("Type_CustomPlayer", 8) // Andet kategorien
+categorymap.set("CSGO_Type_MusicKit", 8) // Andet kategorien
+categorymap.set("CSGO_Type_Equipment", 8) // Andet kategorien
+categorymap.set("CSGO_Type_Spray", 8) // Andet kategorien
+
+const qualitymap = new Map()
+qualitymap.set("Rarity_Common_Weapon", 0)
+qualitymap.set("Rarity_Uncommon_Weapon", 1)
+qualitymap.set("Rarity_Rare_Weapon", 2)
+qualitymap.set("Rarity_Mythical_Weapon", 2)
+qualitymap.set("Rarity_Legendary_Weapon", 3)
+qualitymap.set("Rarity_Ancient_Weapon", 4)
+qualitymap.set("Rarity_Immortal_Weapon", 5)
+
+const raritiesmap = new Map()
+raritiesmap.set("normal", 0)
+raritiesmap.set("strange", 1)
+raritiesmap.set("tournament", 2)
+raritiesmap.set("unusual", 2)
+
 // Mangler float
 app.get("/api/user/inventory", function(req, ress){
     // Get steam id
@@ -953,7 +992,6 @@ app.get("/api/user/inventory", function(req, ress){
                                     }
                                 }
                             }
-
                             var url2 = "https://steamcommunity-a.akamaihd.net/economy/image/" + element.icon_url
                             obj = {
                                 classid: element.classid,
@@ -964,7 +1002,14 @@ app.get("/api/user/inventory", function(req, ress){
                                 skinname: element.name.substring(element.name.indexOf("|") + add, element.name.length),
                                 wear: wear,
                                 stattrak: false,
-                                float: float
+                                float: float,
+                                category: categorymap.get(element.tags[0].internal_name)
+                            }
+                            if(element.tags[0].internal_name !== "CSGO_Type_WeaponCase" & element.tags[0].internal_name !== "CSGO_Type_Spray")
+                            {
+                                obj.quality = qualitymap.get(element.tags[4].internal_name)
+                                obj.rarity = raritiesmap.get(element.tags[3].internal_name)
+                                console.log(element.tags[4].internal_name + obj.quality)
                             }
                             if(element.name.includes("StatTrak"))
                                 obj.stattrak = true
