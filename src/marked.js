@@ -43,13 +43,14 @@ class SkinSelect extends Component {
                 p[key] = "category " + key
             }
             p[name] = "category " + name + " active"
+            this.props.callback(index)
         }
         else
         {
             p[name] = "category " + name
+            this.props.callback(-1)
         }
         this.setState({p})
-        this.props.callback(index)
     }
 
     render(){
