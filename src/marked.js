@@ -33,7 +33,7 @@ class SkinSelect extends Component {
         this.toggleOnOff = this.toggleOnOff.bind(this)
     }
 
-    toggleOnOff(name)
+    toggleOnOff(name, index)
     {
         var p = this.state.categories
         if(p[name].indexOf("active") == -1)
@@ -49,36 +49,37 @@ class SkinSelect extends Component {
             p[name] = "category " + name
         }
         this.setState({p})
+        this.props.callback(index)
     }
 
     render(){
         return(
             <div className="skinSelect rounded noselect">
-                <span onClick={() => this.toggleOnOff("knive")} className={this.state.categories.knive}>
+                <span onClick={() => this.toggleOnOff("knive", 0)} className={this.state.categories.knive}>
                     knive
                 </span>
-                <span onClick={() => this.toggleOnOff("pistol")} className={this.state.categories.pistol}>
+                <span onClick={() => this.toggleOnOff("pistol", 1)} className={this.state.categories.pistol}>
                     pistoler
                 </span>
-                <span onClick={() => this.toggleOnOff("riffel")} className={this.state.categories.riffel}>
+                <span onClick={() => this.toggleOnOff("riffel", 2)} className={this.state.categories.riffel}>
                     rifler
                 </span>
-                <span onClick={() => this.toggleOnOff("smg")} className={this.state.categories.smg}>
+                <span onClick={() => this.toggleOnOff("smg", 3)} className={this.state.categories.smg}>
                     smg'er
                 </span>
-                <span onClick={() => this.toggleOnOff("shotgun")} className={this.state.categories.shotgun}>
+                <span onClick={() => this.toggleOnOff("shotgun", 4)} className={this.state.categories.shotgun}>
                     shotguns
                 </span>
-                <span onClick={() => this.toggleOnOff("lmg")} className={this.state.categories.lmg}>
+                <span onClick={() => this.toggleOnOff("lmg", 5)} className={this.state.categories.lmg}>
                     lmg'er
                 </span>
-                <span onClick={() => this.toggleOnOff("handsker")} className={this.state.categories.handsker}>
+                <span onClick={() => this.toggleOnOff("handsker", 6)} className={this.state.categories.handsker}>
                     handsker
                 </span>
-                <span onClick={() => this.toggleOnOff("sticker")} className={this.state.categories.sticker}>
+                <span onClick={() => this.toggleOnOff("sticker", 7)} className={this.state.categories.sticker}>
                     sticker
                 </span>
-                <span onClick={() => this.toggleOnOff("mere")} className={this.state.categories.mere}>
+                <span onClick={() => this.toggleOnOff("mere", 8)} className={this.state.categories.mere}>
                     andet
                 </span>
             </div>
@@ -285,22 +286,37 @@ class ItemBox extends Component {
 class Marked extends Component {
     constructor(props, context){
         super(props, context);
+        this.updateType = this.updateType.bind(this)
         this.getMarketPlace = this.getMarketPlace.bind(this)
-        this.state = { arr: [], options: {
-            rarity: -1,
+        this.state = { 
+            arr: [],
             quality: -1,
-            wear: -1
-        }  }
+            rarity: -1,
+            wear: -1,
+            type: -1
+        }
         this.firstCall = true
     }
 
-    getMarketPlace(quality, rarity, wear)
+    updateType(type)
     {
+        this.getMarketPlace(this.state.quality, this.state.rarity, this.state.wear, type)
+    }
+
+    getMarketPlace(quality, rarity, wear, type=222)
+    {
+        this.setState({
+            rarity: rarity,
+            quality: quality,
+            wear: wear,
+        })
+
         let c = this
         let obj = {
             rarity: -1,
             quality: -1,
-            wear: -1
+            wear: -1,
+            type: this.state.type
         }
         if(rarity != undefined)
         {
@@ -314,11 +330,17 @@ class Marked extends Component {
         {
             obj.wear = wear;
         }
+        if(type != 222)
+        {
+            obj.type = type
+            this.setState({ type: type })
+        }
         axios.get("/api/market", {
             params: {
                 wear: obj.wear,
                 quality: obj.quality,
-                rarity: obj.rarity
+                rarity: obj.rarity,
+                type: obj.type
             }
         }).then(function(response){
             let arr = []
@@ -353,7 +375,7 @@ class Marked extends Component {
                     CSGO Boost &gt; Marked
                 </div>
                 <div className="marketMenu rounded">
-                    <SkinSelect />
+                    <SkinSelect callback={this.updateType} />
                     <SubMenu callback={this.getMarketPlace} />
                 </div>
                 <SortingMenu />

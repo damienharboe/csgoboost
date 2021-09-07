@@ -296,6 +296,10 @@ app.get("/api/market", function(req, res){
     {
         query.quality = parseInt(req.query.quality)
     }
+    if(req.query.type != -1)
+    {
+        query.category = parseInt(req.query.type)
+    }
     console.log(query)
     market.find(query).toArray(function(err, result){
         if (err) throw err
@@ -1009,7 +1013,6 @@ app.get("/api/user/inventory", function(req, ress){
                             {
                                 obj.quality = qualitymap.get(element.tags[4].internal_name)
                                 obj.rarity = raritiesmap.get(element.tags[3].internal_name)
-                                console.log(element.tags[4].internal_name + obj.quality)
                             }
                             if(element.name.includes("StatTrak"))
                                 obj.stattrak = true
@@ -1127,7 +1130,6 @@ app.get("/api/user/notifications", function(req, res){
 
 app.post("/api/user/notifications/remove", function(req, res){
     users.findOne({ token: req.body.token }, function(err, ures){
-        console.log(req.body.classid)
         var query = {
             steamId: ures.steamId
         }
