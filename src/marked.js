@@ -3,16 +3,6 @@ import { NavLink } from "react-router-dom"
 import deagle from '.\\gfx\\DEAGLE.png'
 const axios = require("axios")
 
-class Category extends Component {
-    render(){
-        return(
-            <span className={this.props.category}>
-                {this.props.name}
-            </span>
-        )
-    }
-}
-
 class SkinSelect extends Component {
     constructor(props, context){
         super(props, context);
@@ -78,7 +68,7 @@ class SkinSelect extends Component {
                     handsker
                 </span>
                 <span onClick={() => this.toggleOnOff("sticker", 7)} className={this.state.categories.sticker}>
-                    sticker
+                    stickers
                 </span>
                 <span onClick={() => this.toggleOnOff("mere", 8)} className={this.state.categories.mere}>
                     andet
@@ -97,8 +87,10 @@ class SubMenu extends Component {
             rarity: -1,
             vrarity: "Kategori",
             wear: -1,
-            vwear: "Stand"
+            vwear: "Stand",
+            searchquery: ""
         }
+        this.search = this.search.bind(this)
     }
 
     componentDidUpdate(prevProps, prevState)
@@ -109,14 +101,17 @@ class SubMenu extends Component {
         }
     }
 
+    search()
+    {
+        this.props.search(this.state.searchquery)
+    }
+
     render(){
         return(
             <div className="subMenu noselect">
                 <span className="searchParent">
-                    <form>
-                        <input className="search rounded_l" type="text" placeholder="Indtast søgeord" />
-                        <input type="submit" className="searchButton rounded_r" value="Søg" />
-                    </form>
+                    <input className="search rounded_l" type="text" placeholder="Indtast søgeord" onChange={(e) => this.setState({ searchquery: e.target.value })} />
+                    <button className="searchButton rounded_r" onClick={this.search}>Søg</button>
                 </span>
                 <span className="dropDownParent">
                     <span className="dropDown">
@@ -289,14 +284,21 @@ class Marked extends Component {
         super(props, context);
         this.updateType = this.updateType.bind(this)
         this.getMarketPlace = this.getMarketPlace.bind(this)
+        this.search = this.search.bind(this)
         this.state = { 
             arr: [],
             quality: -1,
             rarity: -1,
             wear: -1,
-            type: -1
+            type: -1,
+            searchquery: ""
         }
         this.firstCall = true
+    }
+
+    search(query)
+    {
+        this.getMarketPlace(this.state.quality, this.state.rarity, this.state.wear, this.state.type, query)
     }
 
     updateType(type)
@@ -304,12 +306,12 @@ class Marked extends Component {
         this.getMarketPlace(this.state.quality, this.state.rarity, this.state.wear, type)
     }
 
-    getMarketPlace(quality, rarity, wear, type=222)
+    getMarketPlace(quality, rarity, wear, type=222, searchquery="")
     {
         this.setState({
             rarity: rarity,
             quality: quality,
-            wear: wear,
+            wear: wear
         })
 
         let c = this
@@ -317,7 +319,8 @@ class Marked extends Component {
             rarity: -1,
             quality: -1,
             wear: -1,
-            type: this.state.type
+            type: this.state.type,
+            searchquery: this.state.searchquery
         }
         if(rarity != undefined)
         {
@@ -336,12 +339,15 @@ class Marked extends Component {
             obj.type = type
             this.setState({ type: type })
         }
+        obj.searchquery = searchquery
+        this.setState({ searchquery: searchquery })
         axios.get("/api/market", {
             params: {
                 wear: obj.wear,
                 quality: obj.quality,
                 rarity: obj.rarity,
-                type: obj.type
+                type: obj.type,
+                searchquery: obj.searchquery
             }
         }).then(function(response){
             let arr = []
@@ -377,7 +383,7 @@ class Marked extends Component {
                 </div>
                 <div className="marketMenu rounded">
                     <SkinSelect callback={this.updateType} />
-                    <SubMenu callback={this.getMarketPlace} />
+                    <SubMenu callback={this.getMarketPlace} search={this.search} />
                 </div>
                 <SortingMenu />
                 <div className="itemParent noselect">

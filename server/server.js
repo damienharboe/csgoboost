@@ -284,6 +284,14 @@ app.get("/api/market/item/steamprice", function(req, res){
 app.get("/api/market", function(req, res){
     // Building da query
     var query = { }
+    if(req.query.searchquery != "")
+    {
+        query = {
+            $text: {
+                $search: req.query.searchquery
+            }
+        }
+    }
     if(req.query.wear != -1)
     {
         query.wear = parseInt(req.query.wear)
@@ -300,7 +308,6 @@ app.get("/api/market", function(req, res){
     {
         query.category = parseInt(req.query.type)
     }
-    console.log(query)
     market.find(query).toArray(function(err, result){
         if (err) throw err
         res.json(result)
