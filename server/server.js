@@ -292,6 +292,21 @@ app.get("/api/market", function(req, res){
             }
         }
     }
+    if(req.query.minprice != "")
+    {
+        let minprice = parseInt(req.query.minprice)
+        query.price = {
+            $gte: minprice
+        }
+    }
+    if(req.query.maxprice != "")
+    {
+        let maxprice = parseInt(req.query.maxprice)
+        if(query.price != undefined)
+        {
+            query.price["$lte"] = maxprice
+        }
+    }
     if(req.query.wear != -1)
     {
         query.wear = parseInt(req.query.wear)
@@ -308,6 +323,7 @@ app.get("/api/market", function(req, res){
     {
         query.category = parseInt(req.query.type)
     }
+    console.log(query)
     market.find(query).toArray(function(err, result){
         if (err) throw err
         res.json(result)

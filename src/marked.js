@@ -114,7 +114,7 @@ class SubMenu extends Component {
                     <button className="searchButton rounded_r" onClick={this.search}>Søg</button>
                 </span>
                 <span className="dropDownParent">
-                    <span className="dropDown">
+                    <span style={{ marginRight: "5px" }} className="dropDown">
                         <span className="trigger rounded z5">
                             {this.state.vquality}
                         </span>
@@ -130,7 +130,7 @@ class SubMenu extends Component {
                             <a onClick={() => this.setState({ quality: 7, vquality: "Ekstraordinær" })} style={{color: "#eb453b"}}>Ekstraordinær</a>
                         </div>
                     </span>
-                    <span className="dropDown">
+                    <span style={{ marginRight: "5px" }} className="dropDown">
                         <span className="trigger rounded z5">
                             {this.state.vrarity}
                         </span>
@@ -165,6 +165,22 @@ class SubMenu extends Component {
 }
 
 class SortingMenu extends Component {
+    constructor(props, context){
+        super(props, context)
+        this.state = {
+            minprice: "",
+            maxprice: ""
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState)
+    {
+        if(prevState.minprice != this.state.minprice || prevState.maxprice != this.state.maxprice)
+        {
+            this.props.callback(this.state.minprice, this.state.maxprice)
+        }
+    }
+
     render(){
         return(
             <div className="sortingMenu rounded noselect">
@@ -172,9 +188,9 @@ class SortingMenu extends Component {
                     <span className="text">
                         Sæt prisgrænse
                     </span>
-                    <input className="rounded" type="text" placeholder="Min. pris" id="pricemin" onFocus="setMinPrice('pricemin', 'pricemax')" />
-                     -
-                    <input className="rounded" type="text" placeholder="Maks pris" id="pricemax" onBlur="setMaxPrice('pricemin', 'pricemax')" />
+                    <input style={{ marginRight: "3px" }} className="rounded" type="text" placeholder="Min. pris" id="pricemin" onBlur={(e) => this.setState({ minprice: e.target.value })} />
+                    -
+                    <input style={{ marginLeft: "3px" }} className="rounded" type="text" placeholder="Maks pris" id="pricemax" onBlur={(e) => this.setState({ maxprice: e.target.value })} />
                 </div>
                 <div className="sortingParent">
                     <span className="text">
@@ -285,15 +301,23 @@ class Marked extends Component {
         this.updateType = this.updateType.bind(this)
         this.getMarketPlace = this.getMarketPlace.bind(this)
         this.search = this.search.bind(this)
+        this.updateMinMaxPrice = this.updateMinMaxPrice.bind(this)
         this.state = { 
             arr: [],
             quality: -1,
             rarity: -1,
             wear: -1,
             type: -1,
-            searchquery: ""
+            searchquery: "",
+            minprice: "",
+            maxprice: ""
         }
         this.firstCall = true
+    }
+
+    updateMinMaxPrice(minprice, maxprice)
+    {
+        this.getMarketPlace(this.state.quality, this.state.rarity, this.state.wear, this.state.type, this.state.query, minprice, maxprice)
     }
 
     search(query)
@@ -306,7 +330,7 @@ class Marked extends Component {
         this.getMarketPlace(this.state.quality, this.state.rarity, this.state.wear, type)
     }
 
-    getMarketPlace(quality, rarity, wear, type=222, searchquery="")
+    getMarketPlace(quality, rarity, wear, type=222, searchquery="", minprice="", maxprice="")
     {
         this.setState({
             rarity: rarity,
@@ -320,7 +344,9 @@ class Marked extends Component {
             quality: -1,
             wear: -1,
             type: this.state.type,
-            searchquery: this.state.searchquery
+            searchquery: this.state.searchquery,
+            minprice: this.state.minprice,
+            maxprice: this.state.maxprice
         }
         if(rarity != undefined)
         {
@@ -339,6 +365,10 @@ class Marked extends Component {
             obj.type = type
             this.setState({ type: type })
         }
+        obj.minprice = minprice
+        this.setState({ minprice: minprice })
+        obj.maxprice = maxprice
+        this.setState({ maxprice: maxprice })
         obj.searchquery = searchquery
         this.setState({ searchquery: searchquery })
         axios.get("/api/market", {
@@ -347,7 +377,9 @@ class Marked extends Component {
                 quality: obj.quality,
                 rarity: obj.rarity,
                 type: obj.type,
-                searchquery: obj.searchquery
+                searchquery: obj.searchquery,
+                minprice: obj.minprice,
+                maxprice: obj.maxprice
             }
         }).then(function(response){
             let arr = []
@@ -385,7 +417,7 @@ class Marked extends Component {
                     <SkinSelect callback={this.updateType} />
                     <SubMenu callback={this.getMarketPlace} search={this.search} />
                 </div>
-                <SortingMenu />
+                <SortingMenu callback={this.updateMinMaxPrice} />
                 <div className="itemParent noselect">
                     {this.state.arr}
                 </div>
