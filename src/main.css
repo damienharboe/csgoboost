@@ -48,6 +48,16 @@
     margin-left: -60px;
 }
 
+.dropdown-content {
+    display: none;
+    position: absolute;
+    margin-left: 20%;
+}
+
+.dropdown-content.active {
+    display: block;
+}
+
 
 /* ///////////////////////////////////////////////////  */
 /*     Basic HTML tags / Almindelige HTML tags          */

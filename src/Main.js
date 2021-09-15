@@ -13,13 +13,16 @@ import Marked from "./marked";
 import Inventar from "./inventar";
 import Help from "./help";
 import Item from "./item"
-import Admin from "./admin"
 import Footer from "./footer"
 import Profile from "./account/profile"
 import History from "./account/history"
 import Deposit from "./account/deposit"
 import Withdraw from "./account/withdraw"
 import Pending from "./account/pending"
+import EditUser from "./admin/edituser"
+import GlobalSettings from "./admin/globalsettings"
+import UserList from "./admin/userlist"
+
 const axios = require("axios")
 
 class User extends Component {
@@ -288,7 +291,7 @@ class Main extends Component {
         this.removeNotif = this.removeNotif.bind(this)
         this.getadmin = this.getadmin.bind(this)
         this.renderAdminButton = this.renderAdminButton.bind(this)
-        this.state = { showProfile: false, showNotifs: false, money: "...", first: true, notifs: [], admin: false }
+        this.state = { showProfile: false, showNotifs: false, money: "...", first: true, notifs: [], admin: false, adminclass: false }
     }
 
     logout()
@@ -336,7 +339,7 @@ class Main extends Component {
         if(localStorage.getItem("token") !== null)
         {
             return(
-                <NavLink to="inventar" className="a" activeClassName="selected">
+                <NavLink to="/inventar" className="a" activeClassName="selected">
                     Inventar
                 </NavLink>
             )
@@ -389,9 +392,18 @@ class Main extends Component {
         if(this.state.admin)
         {
             return(
-                <NavLink to="admin" className="a" activeClassName="selected">
-                    Admin
-                </NavLink>
+                <>
+                    <a className="a" onClick={() => this.setState({ adminclass: !this.state.adminclass })}>Admin</a>
+                    <div className={ "dropdown-content " + (this.state.adminclass ? "active" : "") }>
+                        <br />
+                        <NavLink to="/admin/userlist">
+                            Brugerliste
+                        </NavLink> <br /> <br />
+                        <NavLink to="/admin/globalsettings">
+                            Globale indstillinger
+                        </NavLink>
+                    </div>
+                </>
             )
         }
     }
@@ -421,11 +433,11 @@ class Main extends Component {
                     <div className="menu">
                         <div className="logo"></div>
                         <div className="left">
-                            <NavLink to="marked" className="a" activeClassName="selected">
+                            <NavLink to="/marked" className="a" activeClassName="selected">
                               Marked
                             </NavLink>
                             {this.renderInventarButton()}
-                            <NavLink to="help" className="a" activeClassName="selected">
+                            <NavLink to="/help" className="a" activeClassName="selected">
                                 Hjælp
                             </NavLink>
                             {this.renderAdminButton()}
@@ -436,13 +448,13 @@ class Main extends Component {
                 <div className={accountc} id="profileDropDown">
                     <div className="content">
                         <div className="left">
-                            <NavLink to="pending">
+                            <NavLink to="/pending">
                                 Afventende Køb / Salg
                             </NavLink>
-                            <NavLink to="history">
+                            <NavLink to="/history">
                                 Købshistorik
                             </NavLink>
-                            <NavLink to="profile">
+                            <NavLink to="/profile">
                                 Profiloplysninger
                             </NavLink>
                             <a onClick={this.logout} className="logout">Log ud</a>
@@ -476,7 +488,9 @@ class Main extends Component {
                     <Route path="/withdraw" component={Withdraw} />
                     <Route path="/deposit" component={Deposit} />
                     <Route path="/pending" component={Pending} />
-                    <Route path="/admin" component={Admin} />
+                    <Route path="/admin/edituser" component={EditUser} />
+                    <Route path="/admin/globalsettings" component={GlobalSettings} />
+                    <Route path="/admin/userlist" component={UserList} />
                 </div>
             </BrowserRouter>
         );
