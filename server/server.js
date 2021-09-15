@@ -12,8 +12,6 @@ const { Strategy } = require("passport-steam")
 const jwt = require("jsonwebtoken")
 const MongoClient = require('mongodb').MongoClient;
 const { default: axios } = require('axios');
-const { url } = require('inspector');
-const { EDESTADDRREQ } = require('constants');
 
 const uri = "mongodb://127.0.0.1:27017"
 const client = new MongoClient(uri)
@@ -323,7 +321,6 @@ app.get("/api/market", function(req, res){
     {
         query.category = parseInt(req.query.type)
     }
-    console.log(query)
     market.find(query).toArray(function(err, result){
         if (err) throw err
         res.json(result)
@@ -1178,6 +1175,45 @@ app.get("/api/user/isadmin", function(req, res){
         else
         {
             res.json({ admin: false })
+        }
+    })
+})
+
+function isAdmin(token, callback)
+{
+    users.findOne({ token: token }, function(err, res){
+        console.log(res)
+        callback(res.admin)
+    })
+}
+
+app.get("/api/admin/users", function(req, res){
+    // Always check if user is admin
+    isAdmin(req.query.token, function(isadmin){
+        if(isadmin)
+        {
+            users.find({}).toArray(function(err, ures){
+                res.json(ures)
+            })
+        }
+        else
+        {
+            res.json({ fuckoff: true })
+        }
+    })
+})
+
+app.get("/api/admin/user", function(req, res){
+    isAdmin(req.query.token, function(isadmin){
+        if(isadmin)
+        {
+            users.findOne({ steamId: req.query.steamId }, function(err, ures){
+                res.json(ures)
+            })
+        }
+        else
+        {
+            res.json({ fuckoff: true })
         }
     })
 })
